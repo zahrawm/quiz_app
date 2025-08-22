@@ -4,6 +4,8 @@ import 'package:quiz_app/screen/about_screen.dart';
 import 'package:quiz_app/screen/categories.dart';
 import 'package:quiz_app/screen/home_screen.dart';
 import 'package:quiz_app/screen/onboarding_screen.dart';
+import 'package:quiz_app/screen/quiz_setting_screen.dart';
+
 import 'package:quiz_app/screen/splash_screen.dart';
 
 void main() {
@@ -27,7 +29,8 @@ class MyApp extends StatelessWidget {
         '/onboard': (_) => const OnboardingScreen(),
         '/about': (_) => const AboutMeScreen(),
         '/home': (_) => const HomeScreen(),
-        '/categories' :(_) =>  Categories()
+        '/categories': (_) => Categories(),
+        '/quiz_settings': (_) => QuizSettingsModal(),
       },
     );
   }

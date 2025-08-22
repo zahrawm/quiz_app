@@ -1,6 +1,7 @@
 import 'package:dotted_border/dotted_border.dart';
 
 import 'package:flutter/material.dart';
+import 'package:quiz_app/screen/quiz_setting_screen.dart';
 import 'package:quiz_app/widgets/card.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -288,12 +289,28 @@ class HomeScreen extends StatelessWidget {
                             minimumSize: Size.zero,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
-                          child: Text(
-                            'View all',
-                            style: TextStyle(
-                              color: const Color(0xFFFE950B),
-                              fontWeight: FontWeight.bold,
-                              fontSize: bodyFontSize,
+                          child: GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                barrierDismissible: true,
+                                builder: (context) => Dialog(
+                                  backgroundColor: Colors.transparent,
+                                  insetPadding: EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 100,
+                                  ),
+                                  child: QuizSettingsModal(),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              'View all',
+                              style: TextStyle(
+                                color: const Color(0xFFFE950B),
+                                fontWeight: FontWeight.bold,
+                                fontSize: bodyFontSize,
+                              ),
                             ),
                           ),
                         ),
