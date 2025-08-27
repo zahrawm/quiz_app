@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:quiz_app/provider/shared_preferences_provider.dart';
 import 'package:quiz_app/widgets/button.dart';
 
 class QuizSettingsModal extends StatefulWidget {
+  final String category;
+  
+  const QuizSettingsModal({Key? key, required this.category}) : super(key: key);
+
   @override
   _QuizSettingsModalState createState() => _QuizSettingsModalState();
 }
@@ -11,7 +17,16 @@ class _QuizSettingsModalState extends State<QuizSettingsModal> {
   String difficulty = 'Easy';
 
   @override
+  void initState() {
+    super.initState();
+    final userPrefs = Provider.of<UserPreferencesProvider>(context, listen: false);
+    questionCount = userPrefs.getQuizQuestions(widget.category);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final userPrefs = Provider.of<UserPreferencesProvider>(context, listen: false);
+    
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -160,7 +175,8 @@ class _QuizSettingsModalState extends State<QuizSettingsModal> {
           MyButton(
             text: 'Start Quiz',
             color: Color(0xFFFF8C00),
-            onPressed: () {
+            onPressed: () async {
+              await userPrefs.setQuizQuestions(widget.category, questionCount);
               Navigator.pop(context);
             },
           ),
