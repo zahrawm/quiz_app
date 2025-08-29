@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:quiz_app/provider/shared_preferences_provider.dart';
 import 'package:quiz_app/screen/about_screen.dart';
 import 'package:quiz_app/screen/categories.dart';
 import 'package:quiz_app/screen/home_screen.dart';
 import 'package:quiz_app/screen/onboarding_screen.dart';
+import 'package:quiz_app/screen/quiz_setting_screen.dart';
 import 'package:quiz_app/screen/splash_screen.dart';
 
 void main() {
@@ -15,20 +18,24 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        textTheme: GoogleFonts.ralewayTextTheme(),
+    return ChangeNotifierProvider(
+      create: (context) => UserPreferencesProvider(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          textTheme: GoogleFonts.ralewayTextTheme(),
+        ),
+        initialRoute: '/',
+        routes: {
+          '/': (_) => const SplashScreen(),
+          '/onboard': (_) => const OnboardingScreen(),
+          '/about': (_) => const AboutMeScreen(),
+          '/home': (_) => const HomeScreen(),
+          '/categories': (_) => Categories(),
+          '/quiz_settings': (_) => QuizSettingsModal(category: 'Mathematics'),
+        },
       ),
-      initialRoute: '/',
-      routes: {
-        '/': (_) => const SplashScreen(),
-        '/onboard': (_) => const OnboardingScreen(),
-        '/about': (_) => const AboutMeScreen(),
-        '/home': (_) => const HomeScreen(),
-        '/categories' :(_) =>  Categories()
-      },
     );
   }
 }

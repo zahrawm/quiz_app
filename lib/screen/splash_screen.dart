@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:quiz_app/provider/shared_preferences_provider.dart';
+import 'package:quiz_app/screen/home_screen.dart';
 import 'package:quiz_app/screen/onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -12,26 +15,38 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 500), () {
-      setState(() {});
-    });
+    _initializeApp();
+  }
 
-    Future.delayed(const Duration(seconds: 3), () async {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const OnboardingScreen()),
-      );
-    });
+  Future<void> _initializeApp() async {
+    final userPrefs = Provider.of<UserPreferencesProvider>(
+      context,
+      listen: false,
+    );
+    await userPrefs.initPreferences();
+
+    await Future.delayed(const Duration(seconds: 3));
+
+    if (mounted) {
+      if (userPrefs.isFirstTime || userPrefs.firstName.isEmpty) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const OnboardingScreen()),
+        );
+      } else {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    double size = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: Color(0xFFFE950B),
+      backgroundColor: const Color(0xFFFE950B),
       body: Column(
         children: [
-          Expanded(flex: 1, child: SizedBox()),
-
+          const Expanded(flex: 1, child: SizedBox()),
           Expanded(
             flex: 3,
             child: Column(
@@ -44,21 +59,27 @@ class _SplashScreenState extends State<SplashScreen> {
                     child: Image.asset("assets/logo.png", fit: BoxFit.cover),
                   ),
                 ),
-                Center(
+                const Center(
                   child: Text(
                     'Quizzia',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-
-          Padding(
+          const Padding(
             padding: EdgeInsets.only(bottom: 20),
             child: Text(
               'Developed by Fatimah',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
               textAlign: TextAlign.center,
             ),
           ),

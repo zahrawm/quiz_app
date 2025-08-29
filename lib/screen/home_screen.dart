@@ -1,6 +1,8 @@
 import 'package:dotted_border/dotted_border.dart';
-
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:quiz_app/provider/shared_preferences_provider.dart';
+import 'package:quiz_app/screen/quiz_setting_screen.dart';
 import 'package:quiz_app/widgets/card.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -86,257 +88,277 @@ class HomeScreen extends StatelessWidget {
       subtitleFontSize = 15;
     }
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: screenHeight - padding.top - padding.bottom,
-            ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: horizontalPadding,
-                vertical: verticalPadding,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: getResponsiveHeight(0.08),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: avatarRadius,
-                          backgroundImage: const AssetImage("assets/girl.jpg"),
-                        ),
-                        SizedBox(width: getResponsiveWidth(0.03)),
-                        Expanded(
-                          child: Text(
-                            "Hi, Emmanuel",
-                            style: TextStyle(
-                              fontSize: titleFontSize,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
+    return Consumer<UserPreferencesProvider>(
+      builder: (context, userPrefs, child) {
+        return Scaffold(
+          backgroundColor: Colors.white,
+          body: SafeArea(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: screenHeight - padding.top - padding.bottom,
+                ),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: horizontalPadding,
+                    vertical: verticalPadding,
                   ),
-
-                  SizedBox(height: getResponsiveHeight(0.02)),
-
-                  SizedBox(
-                    height: getResponsiveHeight(0.065),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            height: double.infinity,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: getResponsiveWidth(0.04),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: getResponsiveHeight(0.08),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              radius: avatarRadius,
+                              backgroundImage: const AssetImage("assets/girl.jpg"),
                             ),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFF4F4F4),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.search,
-                                  color: Colors.grey,
-                                  size: isSmallPhone ? 18 : 20,
+                            SizedBox(width: getResponsiveWidth(0.03)),
+                            Expanded(
+                              child: Text(
+                                "Hi, ${userPrefs.firstName.isEmpty ? 'User' : userPrefs.firstName}",
+                                style: TextStyle(
+                                  fontSize: titleFontSize,
+                                  fontWeight: FontWeight.w600,
                                 ),
-                                SizedBox(width: getResponsiveWidth(0.03)),
-                                Expanded(
-                                  child: Text(
-                                    "Search quizzes...",
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: searchFontSize,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: getResponsiveWidth(0.03)),
-                        Container(
-                          height: double.infinity,
-                          width: getResponsiveHeight(0.065),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF4F4F4),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Icon(
-                            Icons.tune,
-                            color: Colors.black,
-                            size: isSmallPhone ? 16 : 18,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  SizedBox(height: getResponsiveHeight(0.035)),
-
-                  SizedBox(
-                    height: getResponsiveHeight(0.04),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Categories",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: subtitleFontSize,
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(context, '/categories');
-                          },
-                          child: Text(
-                            "See more",
-                            style: TextStyle(
-                              color: const Color(0xFFFE950B),
-                              fontSize: bodyFontSize,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  SizedBox(height: getResponsiveHeight(0.02)),
-                  LayoutBuilder(
-                    builder: (context, constraints) {
-                      double availableWidth = constraints.maxWidth;
-                      double cardWidth = (availableWidth - 16) / 2;
-                      double cardHeight = cardWidth / gridAspectRatio;
-                      double totalGridHeight = cardHeight * 2 + 16;
-
-                      return SizedBox(
-                        height: totalGridHeight,
-                        child: GridView.count(
-                          physics: const NeverScrollableScrollPhysics(),
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 16,
-                          mainAxisSpacing: 16,
-                          childAspectRatio: gridAspectRatio,
-                          children: const [
-                            CategoryCard(
-                              title: "Mathematics",
-                              imagePath: 'assets/maths.png',
-                              color: Color(0xFFFE950B),
-                            ),
-                            CategoryCard(
-                              title: "Sports",
-                              imagePath: 'assets/sport.png',
-                              color: Color(0xFFFE950B),
-                            ),
-                            CategoryCard(
-                              title: "History",
-                              imagePath: 'assets/book.png',
-                              color: Color(0xFFFE950B),
-                            ),
-                            CategoryCard(
-                              title: "Animals",
-                              imagePath: 'assets/animal.png',
-                              color: Color(0xFFFE950B),
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                           ],
                         ),
-                      );
-                    },
-                  ),
-
-                  SizedBox(height: getResponsiveHeight(0.03)),
-
-                  SizedBox(
-                    height: getResponsiveHeight(0.06),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            "Score History",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: subtitleFontSize,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pushReplacementNamed(
-                              context,
-                              '/categories',
-                            );
-                          },
-                          style: TextButton.styleFrom(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: getResponsiveWidth(0.02),
-                              vertical: getResponsiveHeight(0.005),
-                            ),
-                            minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          child: Text(
-                            'View all',
-                            style: TextStyle(
-                              color: const Color(0xFFFE950B),
-                              fontWeight: FontWeight.bold,
-                              fontSize: bodyFontSize,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  SizedBox(height: getResponsiveHeight(0.03)),
-
-                  DottedBorder(
-                    options: RectDottedBorderOptions(
-                      color: Colors.grey,
-                      dashPattern: [10, 5],
-                      strokeWidth: 2,
-                      padding: EdgeInsets.all(16),
-                    ),
-                    child: Container(
-                      width: 300,
-                      height: 200,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Icon(Icons.file_copy, size: 40, color: Colors.grey),
-                          SizedBox(height: 10),
-                          Text(
-                            'You have no scores recorded yet\nSelect a category and challenge\nyourself',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
                       ),
-                    ),
+
+                      SizedBox(height: getResponsiveHeight(0.02)),
+
+                      SizedBox(
+                        height: getResponsiveHeight(0.065),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                height: double.infinity,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: getResponsiveWidth(0.04),
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFF4F4F4),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.search,
+                                      color: Colors.grey,
+                                      size: isSmallPhone ? 18 : 20,
+                                    ),
+                                    SizedBox(width: getResponsiveWidth(0.03)),
+                                    Expanded(
+                                      child: Text(
+                                        "Search quizzes...",
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: searchFontSize,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: getResponsiveWidth(0.03)),
+                            Container(
+                              height: double.infinity,
+                              width: getResponsiveHeight(0.065),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF4F4F4),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Icon(
+                                Icons.tune,
+                                color: Colors.black,
+                                size: isSmallPhone ? 16 : 18,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      SizedBox(height: getResponsiveHeight(0.035)),
+
+                      SizedBox(
+                        height: getResponsiveHeight(0.04),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Categories",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: subtitleFontSize,
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(context, '/categories');
+                              },
+                              child: Text(
+                                "See more",
+                                style: TextStyle(
+                                  color: const Color(0xFFFE950B),
+                                  fontSize: bodyFontSize,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      SizedBox(height: getResponsiveHeight(0.02)),
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          double availableWidth = constraints.maxWidth;
+                          double cardWidth = (availableWidth - 16) / 2;
+                          double cardHeight = cardWidth / gridAspectRatio;
+                          double totalGridHeight = cardHeight * 2 + 16;
+
+                          return SizedBox(
+                            height: totalGridHeight,
+                            child: GridView.count(
+                              physics: const NeverScrollableScrollPhysics(),
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 16,
+                              mainAxisSpacing: 16,
+                              childAspectRatio: gridAspectRatio,
+                              children: const [
+                                CategoryCard(
+                                  title: "Mathematics",
+                                  imagePath: 'assets/maths.png',
+                                  color: Color(0xFFFE950B),
+                                ),
+                                CategoryCard(
+                                  title: "Sports",
+                                  imagePath: 'assets/sport.png',
+                                  color: Color(0xFFFE950B),
+                                ),
+                                CategoryCard(
+                                  title: "History",
+                                  imagePath: 'assets/book.png',
+                                  color: Color(0xFFFE950B),
+                                ),
+                                CategoryCard(
+                                  title: "Animals",
+                                  imagePath: 'assets/animal.png',
+                                  color: Color(0xFFFE950B),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+
+                      SizedBox(height: getResponsiveHeight(0.03)),
+
+                      SizedBox(
+                        height: getResponsiveHeight(0.06),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                "Score History",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: subtitleFontSize,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushReplacementNamed(
+                                  context,
+                                  '/categories',
+                                );
+                              },
+                              style: TextButton.styleFrom(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: getResponsiveWidth(0.02),
+                                  vertical: getResponsiveHeight(0.005),
+                                ),
+                                minimumSize: Size.zero,
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    barrierDismissible: true,
+                                    builder: (context) => Dialog(
+                                      backgroundColor: Colors.transparent,
+                                      insetPadding: EdgeInsets.symmetric(
+                                        horizontal: 20,
+                                        vertical: 100,
+                                      ),
+                                      child: QuizSettingsModal(category: '',),
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  'View all',
+                                  style: TextStyle(
+                                    color: const Color(0xFFFE950B),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: bodyFontSize,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      SizedBox(height: getResponsiveHeight(0.03)),
+
+                      DottedBorder(
+                        options: RectDottedBorderOptions(
+                          color: Colors.grey,
+                          dashPattern: [10, 5],
+                          strokeWidth: 2,
+                          padding: EdgeInsets.all(16),
+                        ),
+                        child: Container(
+                          width: 300,
+                          height: 200,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(Icons.file_copy, size: 40, color: Colors.grey),
+                              SizedBox(height: 10),
+                              Text(
+                                'You have no scores recorded yet\nSelect a category and challenge\nyourself',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
